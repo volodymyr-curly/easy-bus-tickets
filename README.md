@@ -1,4 +1,4 @@
-# Easy Bus Ticket
+# Easy Bus Tickets
 
 ## Microservice API for buying bus tickets
 
