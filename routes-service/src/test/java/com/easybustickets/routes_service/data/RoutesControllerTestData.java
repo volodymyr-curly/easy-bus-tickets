@@ -9,7 +9,7 @@ public class RoutesControllerTestData {
     public static final String SHOW_ALL_ROUTES_URL = "/api/routes";
     public static final String SHOW_ROUTE_URL = "/api/routes/{id}";
     public static final Integer ROUTE_ID = 1;
-    public static final Integer EXPECTED_TICKETS_AMOUNT = 29;
+    public static final Integer EXPECTED_SEAT_NUMBER = 1;
     public static final int ELEMENT_INDEX = 0;
 
     public RouteResponse generateRouteResponse() {
@@ -20,6 +20,7 @@ public class RoutesControllerTestData {
                 .destination("Kyiv")
                 .destinationTime("28-02-2023 16:00")
                 .price(new BigDecimal("100.00"))
+                .seatsAmount(30)
                 .ticketsAmount(30)
                 .build();
     }
@@ -31,6 +32,7 @@ public class RoutesControllerTestData {
                 .destination("Kyiv")
                 .destinationTime("28-02-2023 16:00")
                 .price(new BigDecimal("100.00"))
+                .seatsAmount(30)
                 .ticketsAmount(30)
                 .build();
     }
@@ -43,6 +45,7 @@ public class RoutesControllerTestData {
                 .destination("Kyiv")
                 .destinationTime("28-02-2023 17:00")
                 .price(new BigDecimal("100.00"))
+                .seatsAmount(30)
                 .ticketsAmount(30)
                 .build();
     }
@@ -54,6 +57,7 @@ public class RoutesControllerTestData {
                 .destination("Kyiv")
                 .destinationTime("28-02-2023 17:00")
                 .price(new BigDecimal("100.00"))
+                .seatsAmount(30)
                 .ticketsAmount(30)
                 .build();
     }

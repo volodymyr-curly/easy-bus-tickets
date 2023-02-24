@@ -40,12 +40,11 @@ public class RoutesController {
     }
 
     @PatchMapping("/{id}")
-    public RouteResponse updateRouteTickets(@PathVariable Integer id) {
+    public Integer updateRouteTickets(@PathVariable Integer id) {
         log.debug("Update tickets amount of route with id={}", id);
-        RouteResponse routeResponse = routeMapper
-                .convertToRouteResponse(routeService.changeTicketsAmount(id));
-        log.debug("Success when update {}", routeResponse);
-        return routeResponse;
+        Integer seatNumber = routeService.changeTicketsAmount(id);
+        log.debug("Seat number = {}", seatNumber);
+        return  seatNumber;
     }
 
     @PostMapping()

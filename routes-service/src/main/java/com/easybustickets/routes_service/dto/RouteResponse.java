@@ -19,5 +19,6 @@ public class RouteResponse {
     private String destination;
     private String destinationTime;
     private BigDecimal price;
+    private Integer seatsAmount;
     private Integer ticketsAmount;
 }

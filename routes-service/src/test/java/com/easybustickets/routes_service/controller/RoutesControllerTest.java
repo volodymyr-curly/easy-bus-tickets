@@ -177,11 +177,9 @@ public class RoutesControllerTest extends RoutesControllerTestData {
                 .andExpect(status().isOk())
                 .andExpect(result -> {
                     String content = result.getResponse().getContentAsString();
-                    RouteResponse actualRoute = objectMapper.readValue(content, new TypeReference<>() {
+                    Integer actualSeatNumber = objectMapper.readValue(content, new TypeReference<>() {
                     });
-                    RouteResponse expectedRoute = generateRouteResponse();
-                    expectedRoute.setTicketsAmount(EXPECTED_TICKETS_AMOUNT);
-                    assertEquals(expectedRoute, actualRoute);
+                    assertEquals(EXPECTED_SEAT_NUMBER, actualSeatNumber);
                 });
     }
 

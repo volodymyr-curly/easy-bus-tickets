@@ -8,5 +8,6 @@ CREATE TABLE routes
     destination    varchar(255),
     destination_time timestamp,
     price          numeric(19, 2),
+    seats_amount   integer,
     tickets_amount integer
 );

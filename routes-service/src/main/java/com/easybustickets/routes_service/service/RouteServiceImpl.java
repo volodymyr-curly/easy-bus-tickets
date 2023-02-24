@@ -42,7 +42,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public Route changeTicketsAmount(Integer id) {
+    public Integer changeTicketsAmount(Integer id) {
         Route routeToUpdate = getRouteById(id);
         int newTicketAmount = routeToUpdate.getTicketsAmount() - 1;
 
@@ -51,7 +51,8 @@ public class RouteServiceImpl implements RouteService {
             throw new TicketAmountException(TICKET_AMOUNT_MESSAGE);
         }
         routeToUpdate.setTicketsAmount(newTicketAmount);
-        return routeRepository.save(routeToUpdate);
+        Route updatedRoute = routeRepository.save(routeToUpdate);
+        return updatedRoute.getSeatNumber();
     }
 
     @Override
@@ -76,10 +77,16 @@ public class RouteServiceImpl implements RouteService {
 
 
     private Route getRouteById(Integer id) {
-        return routeRepository.findById(id).orElseThrow(() -> {
+        Route route = routeRepository.findById(id).orElseThrow(() -> {
             log.error("Failed to get route with id={}", id);
             return new EntityNotFoundException(ROUTE_NOT_FOUND_MESSAGE);
         });
+
+        if (route.getTicketsAmount() <= 0) {
+            log.error("Tickets on route number {} is over", id);
+            throw new TicketAmountException(TICKET_AMOUNT_MESSAGE);
+        }
+        return route;
     }
 
     private void checkIfExist(Route route) {

@@ -10,7 +10,7 @@ public interface RouteService {
 
     Route getRout(Integer id);
 
-    Route changeTicketsAmount(Integer id);
+    Integer changeTicketsAmount(Integer id);
 
     Route addRoute (Route route);
 

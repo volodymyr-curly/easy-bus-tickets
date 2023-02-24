@@ -34,6 +34,7 @@ public class Route {
     private LocalDateTime destinationTime;
 
     private BigDecimal price;
+    private Integer seatsAmount;
     private Integer ticketsAmount;
 
     public void updateByRoute(Route updatedRoute) {
@@ -42,6 +43,11 @@ public class Route {
         this.setDestination(updatedRoute.getDestination());
         this.setDestinationTime(updatedRoute.getDestinationTime());
         this.setPrice(updatedRoute.getPrice());
+        this.setTicketsAmount(updatedRoute.getSeatsAmount());
         this.setTicketsAmount(updatedRoute.getTicketsAmount());
+    }
+
+    public Integer getSeatNumber() {
+        return this.seatsAmount-this.ticketsAmount;
     }
 }
