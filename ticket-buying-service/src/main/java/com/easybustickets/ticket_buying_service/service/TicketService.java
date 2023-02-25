@@ -1,16 +1,11 @@
 package com.easybustickets.ticket_buying_service.service;
 
 import com.easybustickets.ticket_buying_service.model.Ticket;
-
-import java.util.List;
+import reactor.core.publisher.Mono;
 
 public interface TicketService {
 
-    Ticket addTicket(Ticket ticket);
+    Mono<Ticket> addTicket(Mono<Ticket> ticket);
 
-    Ticket getTicket(Long id);
-
-    List<Ticket> getTicketByStatus(String status);
-
-    String updateTicketStatus(Ticket ticket);
+    Mono<Ticket> getTicket(String id);
 }

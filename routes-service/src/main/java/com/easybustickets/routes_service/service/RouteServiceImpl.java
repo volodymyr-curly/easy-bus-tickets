@@ -46,7 +46,7 @@ public class RouteServiceImpl implements RouteService {
         Route routeToUpdate = getRouteById(id);
         int newTicketAmount = routeToUpdate.getTicketsAmount() - 1;
 
-        if (newTicketAmount <= 0) {
+        if (newTicketAmount < 0) {
             log.error("Tickets on route number {} is over", id);
             throw new TicketAmountException(TICKET_AMOUNT_MESSAGE);
         }

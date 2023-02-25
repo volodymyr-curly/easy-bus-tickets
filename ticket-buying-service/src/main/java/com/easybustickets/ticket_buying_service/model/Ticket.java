@@ -1,25 +1,27 @@
 package com.easybustickets.ticket_buying_service.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import java.math.BigDecimal;
 
-@Entity
-@Table(name="tickets")
-@Getter
-@Setter
+@Document(collation = "ticket")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Ticket {
 
     @Id
-    @Column(name = "ticket_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private String personName;
     private String routeId;
     private String paymentId;
-    private String status;
+    private BigDecimal price;
+    private Integer seatNumber;
 }

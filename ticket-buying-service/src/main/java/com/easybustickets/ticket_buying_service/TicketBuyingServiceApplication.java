@@ -26,5 +26,4 @@ public class TicketBuyingServiceApplication {
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder();
     }
-
 }

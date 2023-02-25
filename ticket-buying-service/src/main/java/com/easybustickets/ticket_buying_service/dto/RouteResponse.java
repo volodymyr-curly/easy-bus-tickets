@@ -10,10 +10,11 @@ import java.math.BigDecimal;
 @Builder
 public class RouteResponse {
 
-    private Long id;
+    private Integer id;
     private String departure;
-    private String destination;
     private String departureTime;
+    private String destination;
+    private String destinationTime;
     private BigDecimal price;
     private Integer ticketsAmount;
 }

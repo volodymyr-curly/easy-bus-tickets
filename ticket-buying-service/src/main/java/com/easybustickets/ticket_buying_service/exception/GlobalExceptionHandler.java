@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.persistence.EntityNotFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -21,6 +20,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TicketAmountException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleTicketAmountException(TicketAmountException exception) {
+        return exception.getLocalizedMessage();
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleTicketAmountException(RuntimeException exception) {
         return exception.getLocalizedMessage();
     }
 }

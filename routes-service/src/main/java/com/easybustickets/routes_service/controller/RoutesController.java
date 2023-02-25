@@ -44,7 +44,7 @@ public class RoutesController {
         log.debug("Update tickets amount of route with id={}", id);
         Integer seatNumber = routeService.changeTicketsAmount(id);
         log.debug("Seat number = {}", seatNumber);
-        return  seatNumber;
+        return seatNumber;
     }
 
     @PostMapping()

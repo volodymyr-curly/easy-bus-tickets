@@ -172,7 +172,7 @@ public class RoutesControllerTest extends RoutesControllerTestData {
 
     @Test
     @Sql("classpath:/db/migration/V2__Add_Data.sql")
-    void shouldReturn_Route_WhenChangeTicketsAmount() throws Exception {
+    void shouldReturn_SeatNumber_WhenChangeTicketsAmount() throws Exception {
         mockMvc.perform(patch(SHOW_ROUTE_URL, ROUTE_ID))
                 .andExpect(status().isOk())
                 .andExpect(result -> {

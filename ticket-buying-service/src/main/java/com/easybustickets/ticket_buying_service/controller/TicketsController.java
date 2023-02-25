@@ -8,8 +8,7 @@ import com.easybustickets.ticket_buying_service.util.TicketMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -21,29 +20,18 @@ public class TicketsController {
     public final TicketMapper ticketMapper;
 
     @PostMapping()
-    public Long createTicket(@RequestBody TicketRequest ticketRequest) {
+    public Mono<TicketResponse> createTicket(@RequestBody TicketRequest ticketRequest) {
         log.debug("Create {}", ticketRequest);
-        Ticket ticket = ticketService.addTicket(ticketMapper.convertToTicket(ticketRequest));
-        log.debug("Success when create {}", ticket);
-        return ticket.getId();
+        Mono<Ticket> ticketMono = ticketService.addTicket(ticketMapper.convertToTicket(ticketRequest));
+        log.debug("Success when create {}", ticketMono);
+        return ticketMapper.convertToTicketResponse(ticketMono);
     }
 
     @GetMapping("/{ticketId}")
-    public TicketResponse showTicket(@PathVariable("ticketId") Long id) {
+    public Mono<TicketResponse> showTicket(@PathVariable("ticketId") String id) {
         log.debug("Show route");
-        TicketResponse routeDTO = ticketMapper.convertToTicketResponse(ticketService.getTicket(id));
+        Mono<TicketResponse> ticketResponse = ticketMapper.convertToTicketResponse(ticketService.getTicket(id));
         log.debug("Success when show route");
-        return routeDTO;
-    }
-
-    @GetMapping("/status/{status}")
-    public List<TicketResponse> showTickets(@PathVariable String status) {
-        return ticketService.getTicketByStatus(status).stream()
-                .map(ticketMapper::convertToTicketResponse).toList();
-    }
-
-    @PatchMapping("/edit/status")
-    public String updateTicketStatus(@RequestBody TicketResponse ticketDTO) {
-        return ticketService.updateTicketStatus(ticketMapper.convertToTicketFromResponse(ticketDTO));
+        return ticketResponse;
     }
 }

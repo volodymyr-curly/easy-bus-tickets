@@ -1,1 +1,9 @@
 .idea/
+/api-gateway/target/
+/discovery-server/target/
+/payment-service/target/
+/payment-status-service/target/
+/routes-service/target/
+/ticket-buying-service/target/
+/ticket-info-service/target/
+/ticket-status-checker/target/

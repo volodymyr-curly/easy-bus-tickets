@@ -13,4 +13,5 @@ public class TicketRequest {
 
     private String personName;
     private String routeId;
+    private String price;
 }
