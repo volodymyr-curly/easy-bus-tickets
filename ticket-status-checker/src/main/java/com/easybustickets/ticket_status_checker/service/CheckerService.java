@@ -18,7 +18,7 @@ public class CheckerService {
 
     private final WebClient.Builder webClientBuilder;
 
-    @Value("${ticket-buying-service.base-url}")
+    @Value("${ticket-service.base-url}")
     private String ticketServiceBaseUrl;
 
     @Value("${route-service.base-url}")

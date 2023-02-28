@@ -4,6 +4,5 @@
 /payment-service/target/
 /payment-status-service/target/
 /routes-service/target/
-/ticket-buying-service/target/
-/ticket-info-service/target/
+/ticket-service/target/
 /ticket-status-checker/target/

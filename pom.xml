@@ -17,8 +17,7 @@
         <module>discovery-server</module>
         <module>api-gateway</module>
         <module>routes-service</module>
-        <module>ticket-buying-service</module>
-        <module>ticket-info-service</module>
+        <module>ticket-service</module>
         <module>payment-service</module>
 		<module>payment-status-service</module>
         <module>ticket-status-checker</module>
