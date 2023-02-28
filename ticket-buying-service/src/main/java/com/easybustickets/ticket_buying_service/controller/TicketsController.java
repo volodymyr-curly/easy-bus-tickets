@@ -1,7 +1,10 @@
 package com.easybustickets.ticket_buying_service.controller;
 
-import com.easybustickets.ticket_buying_service.dto.TicketRequest;
-import com.easybustickets.ticket_buying_service.dto.TicketResponse;
+import com.easybustickets.ticket_buying_service.client.PaymentClient;
+import com.easybustickets.ticket_buying_service.client.RouteClient;
+import com.easybustickets.ticket_buying_service.dto.ticket.TicketRequest;
+import com.easybustickets.ticket_buying_service.dto.ticket.TicketResponse;
+import com.easybustickets.ticket_buying_service.dto.ticket.TicketInfoResponse;
 import com.easybustickets.ticket_buying_service.model.Ticket;
 import com.easybustickets.ticket_buying_service.service.TicketService;
 import com.easybustickets.ticket_buying_service.util.TicketMapper;
@@ -18,6 +21,8 @@ public class TicketsController {
 
     private final TicketService ticketService;
     public final TicketMapper ticketMapper;
+    public final RouteClient routeClient;
+    public final PaymentClient paymentClient;
 
     @PostMapping()
     public Mono<TicketResponse> createTicket(@RequestBody TicketRequest ticketRequest) {
@@ -28,10 +33,16 @@ public class TicketsController {
     }
 
     @GetMapping("/{ticketId}")
-    public Mono<TicketResponse> showTicket(@PathVariable("ticketId") String id) {
-        log.debug("Show route");
-        Mono<TicketResponse> ticketResponse = ticketMapper.convertToTicketResponse(ticketService.getTicket(id));
-        log.debug("Success when show route");
-        return ticketResponse;
+    public Mono<TicketInfoResponse> showTicket(@PathVariable("ticketId") String id) {
+        log.debug("Show ticket info");
+        Mono<Ticket> ticketMono = ticketService.getTicket(id);
+        Mono<TicketInfoResponse> ticketInfo = ticketMapper
+                .convertToTicketInfoResponse(
+                        ticketMono,
+                        ticketMono.flatMap(ticket -> routeClient.getRouteResponse(ticket.getRouteId())),
+                        ticketMono.flatMap(ticket -> paymentClient.getPayment(ticket.getPaymentId()))
+                );
+        log.debug("Success when show ticket info");
+        return ticketInfo;
     }
 }

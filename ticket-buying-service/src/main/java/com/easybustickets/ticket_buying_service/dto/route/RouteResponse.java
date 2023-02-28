@@ -1,4 +1,4 @@
-package com.easybustickets.ticket_buying_service.dto;
+package com.easybustickets.ticket_buying_service.dto.route;
 
 import lombok.*;
 

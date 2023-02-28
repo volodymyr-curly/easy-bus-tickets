@@ -2,8 +2,8 @@ package com.easybustickets.ticket_buying_service.controller;
 
 import com.easybustickets.ticket_buying_service.data.TestDataInitializer;
 import com.easybustickets.ticket_buying_service.data.TicketControllerTestData;
-import com.easybustickets.ticket_buying_service.dto.TicketResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.easybustickets.ticket_buying_service.dto.ticket.TicketInfoResponse;
+import com.easybustickets.ticket_buying_service.dto.ticket.TicketResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import static com.easybustickets.ticket_buying_service.exception.ExceptionMessage.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -24,6 +26,13 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 @AutoConfigureWebTestClient
 @AutoConfigureWireMock(port = 8086)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
+@TestPropertySource(
+        properties = {
+                "routes-service.url=http://localhost:8086/api/routes/{id}",
+                "payment-service.url=http://localhost:8086/api/payment",
+                "payment-status-service.url=http://localhost:8086/api/payment-status/{id}"
+        }
+)
 public class TicketControllerTest extends TicketControllerTestData {
 
     @Autowired
@@ -37,16 +46,8 @@ public class TicketControllerTest extends TicketControllerTestData {
 
     @Test
     void shouldReturn_TicketResponse_WhenCreateTicketWith() throws Exception {
-        stubFor(post(urlEqualTo(PAYMENT_URL))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(generatePaymentRequest())))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("done_payment_response.json")));
-
-        stubFor(patch(urlEqualTo(ROUTES_URL + ROUTE_ID))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("1")));
+        createPostStub("done_payment_response.json");
+        createPatchStub();
 
         webTestClient
                 .post()
@@ -64,11 +65,7 @@ public class TicketControllerTest extends TicketControllerTestData {
 
     @Test
     void shouldReturn_TicketResponse_WhenCreateTicketWithFailedPaymentStatus() throws Exception {
-        stubFor(post(urlEqualTo(PAYMENT_URL))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(generatePaymentRequest())))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("failed_payment_response.json")));
+        createPostStub("failed_payment_response.json");
 
         webTestClient
                 .post()
@@ -85,16 +82,12 @@ public class TicketControllerTest extends TicketControllerTestData {
     }
 
     @Test
-    void shouldReturn_TicketsAmountMessage_WhenCreateTicket() throws JsonProcessingException {
-        stubFor(post(urlEqualTo(PAYMENT_URL))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(generatePaymentRequest())))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("done_payment_response.json")));
+    void shouldReturn_TicketsAmountMessage_WhenCreateTicket() throws Exception {
+        createPostStub("done_payment_response.json");
 
         stubFor(patch(urlEqualTo(ROUTES_URL + ROUTE_ID))
                 .willReturn(aResponse()
-                        .withStatus(400)));
+                        .withStatus(BAD_REQUEST_STATUS)));
 
         webTestClient
                 .post()
@@ -112,7 +105,7 @@ public class TicketControllerTest extends TicketControllerTestData {
         stubFor(post(urlEqualTo(PAYMENT_URL))
                 .withRequestBody(equalToJson(objectMapper.writeValueAsString(generatePaymentRequest())))
                 .willReturn(aResponse()
-                        .withStatus(500)));
+                        .withStatus(SERVER_ERROR_STATUS)));
 
         webTestClient
                 .post()
@@ -126,8 +119,10 @@ public class TicketControllerTest extends TicketControllerTestData {
     }
 
     @Test
-    void shouldReturn_TicketResponse_WhenShowTicket() {
+    void shouldReturn_TicketInfoResponse_WhenShowTicket() {
         testDataInitializer.insertTicket(generateTicket());
+        createGetStub(ROUTES_URL + ROUTE_ID, "route_response.json");
+        createGetStub(GET_PAYMENT_URL + PAYMENT_ID, "done_payment_response.json");
 
         webTestClient
                 .get()
@@ -135,16 +130,37 @@ public class TicketControllerTest extends TicketControllerTestData {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(TicketResponse.class)
+                .expectBody(TicketInfoResponse.class)
                 .consumeWith(ticketResponseEntityExchangeResult -> {
-                    TicketResponse actualTicket = ticketResponseEntityExchangeResult.getResponseBody();
-                    TicketResponse expectedTicket = generateTicketResponse();
+                    TicketInfoResponse actualTicket = ticketResponseEntityExchangeResult.getResponseBody();
+                    TicketInfoResponse expectedTicket = generateTicketInfoResponse();
+                    assertEquals(expectedTicket, actualTicket);
+                });
+    }
+
+    @Test
+    void shouldReturn_TicketInfoResponse_WhenShowTicketWithFailedStatus() {
+        testDataInitializer.insertTicket(generateTicketWithFailedStatus());
+        createGetStub(ROUTES_URL + ROUTE_ID, "route_response.json");
+        createGetStub(GET_PAYMENT_URL + PAYMENT_ID, "failed_payment_response.json");
+
+        webTestClient
+                .get()
+                .uri(GET_TICKET_URL, TICKET_ID)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(TicketInfoResponse.class)
+                .consumeWith(ticketResponseEntityExchangeResult -> {
+                    TicketInfoResponse actualTicket = ticketResponseEntityExchangeResult.getResponseBody();
+                    TicketInfoResponse expectedTicket = generateTicketInfoResponseWhenFailed();
                     assertEquals(expectedTicket, actualTicket);
                 });
     }
 
     @Test
     void shouldReturn_TicketNotFound_WhenShowTicket() {
+
         webTestClient
                 .get()
                 .uri(GET_TICKET_URL, TICKET_ID)
@@ -152,6 +168,66 @@ public class TicketControllerTest extends TicketControllerTestData {
                 .expectStatus()
                 .isNotFound()
                 .expectBody(String.class)
-                .isEqualTo("Ticket not found");
+                .isEqualTo(TICKET_NOT_FOUND_MESSAGE);
+    }
+
+    @Test
+    void shouldReturn_RouteNotFound_WhenShowTicket() {
+        testDataInitializer.insertTicket(generateTicketWithFailedStatus());
+        createGetStub(GET_PAYMENT_URL + PAYMENT_ID, "failed_payment_response.json");
+        createGetErrorStub(ROUTES_URL + ROUTE_ID);
+
+        webTestClient
+                .get()
+                .uri(GET_TICKET_URL, TICKET_ID)
+                .exchange()
+                .expectStatus()
+                .isNotFound()
+                .expectBody(String.class)
+                .isEqualTo(ROUTE_NOT_FOUND_MESSAGE);
+    }
+
+    @Test
+    void shouldReturn_PaymentNotFound_WhenShowTicket() {
+        testDataInitializer.insertTicket(generateTicketWithFailedStatus());
+        createGetStub(ROUTES_URL + ROUTE_ID, "route_response.json");
+        createGetErrorStub(GET_PAYMENT_URL + PAYMENT_ID);
+
+        webTestClient
+                .get()
+                .uri(GET_TICKET_URL, TICKET_ID)
+                .exchange()
+                .expectStatus()
+                .isNotFound()
+                .expectBody(String.class)
+                .isEqualTo(PAYMENT_NOT_FOUND_MESSAGE);
+    }
+
+    private void createPostStub(String response) throws Exception {
+        stubFor(post(urlEqualTo(PAYMENT_URL))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(generatePaymentRequest())))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile(response)));
+    }
+
+    private void createPatchStub() {
+        stubFor(patch(urlEqualTo(ROUTES_URL + ROUTE_ID))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(SEAT_NUMBER)));
+    }
+
+    private void createGetStub(String url, String response) {
+        stubFor(get(urlEqualTo(url))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile(response)));
+    }
+
+    private void createGetErrorStub(String url) {
+        stubFor(get(urlEqualTo(url))
+                .willReturn(aResponse()
+                        .withStatus(NOT_FOUND_STATUS)));
     }
 }

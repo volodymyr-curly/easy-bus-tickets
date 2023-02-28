@@ -1,4 +1,4 @@
-package com.easybustickets.ticket_buying_service.dto;
+package com.easybustickets.ticket_buying_service.dto.ticket;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

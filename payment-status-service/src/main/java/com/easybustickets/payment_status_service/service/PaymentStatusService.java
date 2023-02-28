@@ -55,4 +55,11 @@ public class PaymentStatusService {
         int random = new Random().nextInt(values.length);
         return values[random].name();
     }
+
+    public Payment getPaymentStatus(String paymentId) {
+        return statusRepository.findByPaymentId(paymentId).orElseThrow(() -> {
+            log.error(PAYMENT_NOT_FOUND_MESSAGE);
+            throw new EntityNotFoundException(PAYMENT_NOT_FOUND_MESSAGE);
+        });
+    }
 }

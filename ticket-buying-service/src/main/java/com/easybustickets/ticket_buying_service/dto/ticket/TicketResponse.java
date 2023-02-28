@@ -1,5 +1,6 @@
-package com.easybustickets.ticket_buying_service.dto;
+package com.easybustickets.ticket_buying_service.dto.ticket;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 @Data
@@ -7,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-//@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TicketResponse {
 
     private String id;

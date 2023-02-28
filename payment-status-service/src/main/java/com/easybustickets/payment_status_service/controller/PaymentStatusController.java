@@ -35,4 +35,14 @@ public class PaymentStatusController {
                 .status(updatedPayment.getStatus())
                 .build();
     }
+
+    @GetMapping("/{paymentId}")
+    public PaymentResponse showPaymentStatus(@PathVariable String paymentId) {
+        log.debug("Show payment with paymentId={}", paymentId);
+        Payment updatedPayment = statusService.getPaymentStatus(paymentId);
+        return PaymentResponse.builder()
+                .paymentId(updatedPayment.getPaymentId())
+                .status(updatedPayment.getStatus())
+                .build();
+    }
 }
