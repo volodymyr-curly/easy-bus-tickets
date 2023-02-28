@@ -1,10 +1,10 @@
-package com.easybustickets.ticket_buying_service.data;
+package com.easybustickets.ticket_service.data;
 
-import com.easybustickets.ticket_buying_service.dto.payment.PaymentRequest;
-import com.easybustickets.ticket_buying_service.dto.ticket.TicketInfoResponse;
-import com.easybustickets.ticket_buying_service.dto.ticket.TicketRequest;
-import com.easybustickets.ticket_buying_service.dto.ticket.TicketResponse;
-import com.easybustickets.ticket_buying_service.model.Ticket;
+import com.easybustickets.ticket_service.dto.payment.PaymentRequest;
+import com.easybustickets.ticket_service.dto.ticket.TicketInfoResponse;
+import com.easybustickets.ticket_service.dto.ticket.TicketRequest;
+import com.easybustickets.ticket_service.dto.ticket.TicketResponse;
+import com.easybustickets.ticket_service.model.Ticket;
 
 import java.math.BigDecimal;
 

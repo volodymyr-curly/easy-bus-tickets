@@ -1,9 +1,9 @@
-package com.easybustickets.ticket_buying_service.controller;
+package com.easybustickets.ticket_service.controller;
 
-import com.easybustickets.ticket_buying_service.data.TestDataInitializer;
-import com.easybustickets.ticket_buying_service.data.TicketControllerTestData;
-import com.easybustickets.ticket_buying_service.dto.ticket.TicketInfoResponse;
-import com.easybustickets.ticket_buying_service.dto.ticket.TicketResponse;
+import com.easybustickets.ticket_service.data.TestDataInitializer;
+import com.easybustickets.ticket_service.data.TicketControllerTestData;
+import com.easybustickets.ticket_service.dto.ticket.TicketInfoResponse;
+import com.easybustickets.ticket_service.dto.ticket.TicketResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static com.easybustickets.ticket_buying_service.exception.ExceptionMessage.*;
+import static com.easybustickets.ticket_service.exception.ExceptionMessage.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;

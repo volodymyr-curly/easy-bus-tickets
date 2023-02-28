@@ -1,6 +1,6 @@
-package com.easybustickets.ticket_buying_service.data;
+package com.easybustickets.ticket_service.data;
 
-import com.easybustickets.ticket_buying_service.model.Ticket;
+import com.easybustickets.ticket_service.model.Ticket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Component;
